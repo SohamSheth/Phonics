@@ -2,7 +2,7 @@
 
 A free phonics game for UK Reception children who are learning to blend three-letter words (CVC words like *cat*, *dog*, *sun*). It runs in the browser on an iPad, tablet, phone or laptop, and there is nothing to install.
 
-It is all one file, `index.html`. Open it in a browser and it works.
+It's a web app you can install on the home screen, and it works offline once installed. There is no build step: the files are plain HTML, CSS and JavaScript.
 
 ## What's inside
 
@@ -52,9 +52,13 @@ The easiest way is **GitHub Pages**:
 1. On GitHub, open this repository and go to **Settings → Pages**.
 2. Under *Build and deployment*, choose **Deploy from a branch**, then pick the branch and the `/ (root)` folder, and press **Save**.
 3. After a minute you will get a link like `https://<your-username>.github.io/Phonics/`.
-4. Open that link on the iPad in Safari, tap **Share → Add to Home Screen**. It now opens full screen like an app.
+4. Install it:
+   - **iPad / iPhone:** open the link in **Safari**, tap **Share** (the square with an arrow), then **Add to Home Screen**.
+   - **Android / Chrome / Edge:** tap **Install app** in the browser menu, or use the 📲 button in the app's Grown-ups area.
 
-Stars, stickers and recordings are saved on each device separately.
+Once installed it opens full screen, has its own icon, and works with no internet. Only the book writer and the first voice-note download need a connection. Updates arrive the next time you open it online.
+
+Stars, stickers, books and recordings are saved on each device separately. Installing the app also keeps them safer: Safari can clear saved data for websites that haven't been opened for a few weeks, but not for home-screen apps.
 
 ## How to help at home
 
@@ -67,10 +71,25 @@ Stars, stickers and recordings are saved on each device separately.
 
 ## Adding your own words, stories or photos
 
-Everything lives in lists near the top of the `<script>` in `index.html`:
+All the content is in `js/data.js`:
 
 - `CVC` and `DIGRAPH`: words and their picture (an emoji).
 - `ALIEN`: made-up words.
 - `STORIES`: each page is `[picture, sentence]`, plus one question at the end.
 
 To use a real photo instead of an emoji, put an `<img src="...">` tag where the emoji goes.
+
+## How the code is organised
+
+| File | What's in it |
+|---|---|
+| `index.html` | The page shell; loads everything below in order |
+| `css/style.css` | All the styling |
+| `js/data.js` | Word lists, library stories, stickers |
+| `js/sounds.js` | Splitting words into sounds, the speech voice, your recorded sounds, saved settings |
+| `js/games.js` | Home screen, the five games, the story reader, stickers, the Grown-ups area |
+| `js/book-maker.js` | Reading stages, the word checker, picture scenes, voice-to-text, Claude, the book editor |
+| `js/main.js` | Start-up, offline support, installing to the home screen |
+| `sw.js`, `manifest.webmanifest`, `icons/` | What makes it an installable, offline app |
+
+The scripts are plain files that share one global scope, so they must load in the order `index.html` lists them. After changing app files, bump `VERSION` in `sw.js` so installed copies tidy up their old saved files. Online copies always fetch the newest version anyway.

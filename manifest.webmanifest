@@ -1,0 +1,17 @@
+{
+  "name": "Blend & Read",
+  "short_name": "Blend & Read",
+  "description": "Phonics games, decodable stories and a book maker for children learning to read.",
+  "lang": "en-GB",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#b9e3fb",
+  "theme_color": "#b9e3fb",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
