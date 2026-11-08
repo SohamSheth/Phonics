@@ -21,6 +21,26 @@ There are two levels, which you can change in the **Grown-ups** area (press and 
 - **Level 1**: Phase 2 CVC words (cat, pig, hen, bus...).
 - **Level 2**: Phase 3 "special friends" (sh, ch, th, ng, ee, oo, ai, ar...), such as ship, moon and rain.
 
+## Make your own books from a voice note
+
+**Stories → ✨ Grown-ups: make a book** (press and hold), or **Grown-ups → Make a book**.
+
+1. **Tell the story idea.** Record a voice note (🎙), upload a recording from your phone (📁), use 🗣 Dictate, or type it. For example: *"Max went to the beach with Dad. He dug a big hole and found a crab."*
+2. **Choose the reading stage:**
+   | Stage | Matches | Example words |
+   |---|---|---|
+   | Stage 1 | Phase 2: three-letter words | cat, sun, big |
+   | Stage 2 | Phase 3: special friends (sh ch th ng ee oo ai ar...) | ship, moon, rain |
+   | Stage 3 | Phase 4: blends (fr, st, mp...) | frog, jump, stop |
+   | Stage 4 | Phase 5: other spellings and split digraphs | play, cloud, cake |
+3. **Make the book.** Claude rewrites the idea as a 4, 6 or 8 page book. It picks a scene for each page (park, beach, sea, night, home, farm, woods, town, snow, space) and places emoji characters in it.
+4. **Check it.** The app checks every word against the stage. Words your child can sound out are plain, tricky words get a yellow line, and words above the stage are red so you can change them. If Claude uses a word that's too hard, the app automatically asks it to swap that word once. Use **Make it easier / harder** to rewrite the same story at the next stage down or up.
+5. **Save it.** It appears under **Our books** on the Stories shelf, and your child can tap words to sound them out, just like the library books.
+
+**What does the writing.** When the app is opened as a Claude page, Claude writes the book on your Claude account and books are saved privately to your account. Anywhere else (GitHub Pages, a file on your computer), you can paste your own Anthropic API key in step 3. It is stored only in that browser. Without a key, the app splits your idea into pages and you simplify the red words yourself.
+
+**Voice notes.** Recordings are turned into text inside the browser with a small speech model (Whisper tiny). It downloads about 40 MB the first time and nothing is uploaded. This works when the app is opened from its own address (GitHub Pages). The Claude page version can't use the microphone or download the model, so type the idea there instead.
+
 ## Record the sounds in your own voice (recommended)
 
 Computer voices are poor at pure phonics sounds. They often add "uh" (saying "buh" instead of a clean "b"). In **Grown-ups → Record the sounds**, tap 🎙 next to each sound and say it the way school does. The app then uses your voice in every game. Recordings stay on that device.
