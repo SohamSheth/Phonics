@@ -253,7 +253,7 @@ function shelf() {
     <div class="hello"><div class="owl" aria-hidden="true">🦉</div><div class="bubble">Pick a book to read!</div></div>
     ${mine.length ? `<p class="prompt" style="text-align:left">Our books</p>
     <div class="shelf">${mine.map(b => `<button class="cover" style="--bc:${SETTINGS[b.pages[0].setting].bc}" data-s="${esc(b.id)}">
-      ${sceneHTML(b.pages[0], 'mini')}<b>${esc(b.title)}</b>
+      ${sceneHTML(b.pages[0], 'mini')}<b>${esc(b.title)}</b>${b.author ? `<small>by ${esc(b.author)}</small>` : ''}
       <span class="badge">${STAGES[b.stage].name}</span>${badge(b)}</button>`).join('')}</div>
     <p class="prompt" style="text-align:left">Library books</p>` : ''}
     <div class="shelf">${storiesForLevel().map(s => `<button class="cover" style="--bc:${s.bc}" data-s="${s.id}">
@@ -278,6 +278,7 @@ function readStory(story, p) {
   const bc = custom ? SETTINGS[pg.setting].bc : story.bc;
   render(`<div class="page" style="--bc:${bc}">
     ${custom ? sceneHTML(pg) : `<div class="scene" aria-hidden="true">${pg[0]}</div>`}
+    ${p === 0 && story.author ? `<p class="byline">by ${esc(story.author)}</p>` : ''}
     <div class="text">${words.map((t, i) => {
       const clean = cleanWord(t);
       return `<button class="tw ${wordClass(story, t)}" data-w="${clean}" data-i="${i}">${esc(t)}</button>`;
@@ -303,7 +304,7 @@ function readStory(story, p) {
   $('#prev').onclick = () => readStory(story, p - 1);
   $('#fwd').onclick = () => readStory(story, p + 1);
   $$('.tw').forEach(b => { if (!b.dataset.w) b.disabled = true; });
-  if (p === 0) say(story.title);
+  if (p === 0) say(story.title + (story.author ? ', by ' + story.author : ''));
 }
 async function showWord(w) {
   const pop = document.createElement('div'); pop.className = 'popout';
@@ -400,7 +401,7 @@ function grownups() {
       <h2>Make your own books</h2>
       <p>Record or type a story idea, for example what happened at the weekend. The app turns it into a short picture book using only words your child can read at their stage.</p>
       <div class="row" style="justify-content:flex-start"><button class="big purple" id="toMaker">✨ Make a book</button></div>
-      <div id="myBooks">${MyBooks.list.map(b => `<div class="mybook" data-b="${esc(b.id)}"><span class="t">${esc(b.title)} · ${STAGES[b.stage].name}</span>
+      <div id="myBooks">${MyBooks.list.map(b => `<div class="mybook" data-b="${esc(b.id)}"><span class="t">${esc(b.title)}${b.author ? ` by ${esc(b.author)}` : ''} · ${STAGES[b.stage].name}</span>
         <button class="big light small" data-act="read">Read</button><button class="big light small" data-act="edit">Edit</button><button class="big light small" data-act="del">Delete</button></div>`).join('') || '<p class="muted">No books yet.</p>'}</div>
     </section>
     <section class="panel">

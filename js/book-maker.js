@@ -231,7 +231,8 @@ function normBook(raw, o) {
     if (opts.length === 3 && opts.every(Boolean) && [0, 1, 2].includes(+rq.answer)) q = { text: String(rq.text || '').slice(0, 120), options: opts, answer: +rq.answer };
   }
   return { id: o.id || 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), custom: true,
-    title: String(raw.title || 'Our Story').replace(/\s+/g, ' ').trim().slice(0, 60), stage: o.stage, names, idea: o.idea, pages, q };
+    title: String(raw.title || 'Our Story').replace(/\s+/g, ' ').trim().slice(0, 60), stage: o.stage, names, idea: o.idea, pages, q,
+    author: String(o.author || '').replace(/\s+/g, ' ').trim().slice(0, 40) };
 }
 
 /* ---------- Without AI: split the idea into pages and guess pictures ---------- */
@@ -286,7 +287,7 @@ async function makeBook(o, status, signal) {
 }
 
 /* ---------- Maker screen ---------- */
-const M = { idea: '', stage: null, pages: 6, name: store.get('kidname', '') };
+const M = { idea: '', stage: null, pages: 6, name: store.get('kidname', ''), author: store.get('author', store.get('kidname', '')) };
 function maker() {
   G = null;
   if (!M.stage) M.stage = S.level === 'cvc' ? 'p2' : 'p3';
@@ -309,6 +310,7 @@ function maker() {
       <div class="stagepick">${STAGE_KEYS.map(k => `<button class="opt ${M.stage === k ? 'on' : ''}" data-st="${k}">${STAGES[k].name}<small>${STAGES[k].sub}<br>e.g. ${STAGES[k].eg}</small></button>`).join('')}</div>
       <div class="edrow">
         <div class="field"><label for="kidName">Child’s name (optional)</label><input type="text" id="kidName" value="${esc(M.name)}" autocomplete="off"></div>
+        <div class="field"><label for="author">Story by (shown on the cover)</label><input type="text" id="author" value="${esc(M.author)}" placeholder="e.g. Leo, age 4" autocomplete="off"></div>
         <div class="field"><span class="lbl">Pages</span><div class="opts">${[4, 6, 8].map(n => `<button class="opt ${M.pages === n ? 'on' : ''}" data-pg="${n}">${n}</button>`).join('')}</div></div>
       </div>
     </section>
@@ -330,6 +332,7 @@ function maker() {
   const addText = t => { if (!t) return; ideaBox.value = (ideaBox.value.trim() ? ideaBox.value.trim() + ' ' : '') + t; M.idea = ideaBox.value; };
   ideaBox.oninput = () => { M.idea = ideaBox.value; };
   $('#kidName').oninput = e => { M.name = e.target.value.trim(); store.set('kidname', M.name); };
+  $('#author').oninput = e => { M.author = e.target.value.trim(); store.set('author', M.author); };
   $$('[data-st]').forEach(b => b.onclick = () => { M.stage = b.dataset.st; $$('[data-st]').forEach(x => x.classList.toggle('on', x === b)); });
   $$('[data-pg]').forEach(b => b.onclick = () => { M.pages = +b.dataset.pg; $$('[data-pg]').forEach(x => x.classList.toggle('on', x === b)); });
 
@@ -380,7 +383,7 @@ function maker() {
     M.idea = ideaBox.value.trim();
     if (!M.idea) { gStatus('Add a story idea first.', true); ideaBox.focus(); return; }
     ctl = new AbortController(); $('#makeBtn').disabled = true; $('#stopBtn').hidden = false;
-    try { const book = await makeBook({ idea: M.idea, stage: M.stage, pages: M.pages, name: M.name }, m => gStatus(m), ctl.signal); editor(book); }
+    try { const book = await makeBook({ idea: M.idea, stage: M.stage, pages: M.pages, name: M.name, author: M.author }, m => gStatus(m), ctl.signal); editor(book); }
     catch (e) { gStatus(e.message || 'Something went wrong. Try again.', true); }
     finally { if ($('#makeBtn')) { $('#makeBtn').disabled = false; $('#stopBtn').hidden = true; } }
   };
@@ -404,7 +407,10 @@ function editor(book) {
   render(`<div class="stack">
     <section class="panel">
       <h2>Check your book</h2>
-      <div class="field"><label for="bTitle">Title</label><input type="text" id="bTitle" value="${esc(book.title)}"></div>
+      <div class="edrow">
+        <div class="field"><label for="bTitle">Title</label><input type="text" id="bTitle" value="${esc(book.title)}"></div>
+        <div class="field"><label for="bAuthor">Story by</label><input type="text" id="bAuthor" value="${esc(book.author || '')}" placeholder="e.g. Leo, age 4"></div>
+      </div>
       <p id="sum">${summary()}</p>
       <div class="legend"><span><b>plain</b> = can sound out</span><span><b class="tricky">yellow</b> = tricky word</span><span><b class="hard">red</b> = too hard, change it</span></div>
       <div class="row" style="justify-content:flex-start">
@@ -432,6 +438,7 @@ function editor(book) {
     $('#sum').innerHTML = summary();
   };
   $('#bTitle').oninput = e => { book.title = e.target.value.slice(0, 60); $('#sum').innerHTML = summary(); };
+  $('#bAuthor').oninput = e => { book.author = e.target.value.replace(/\s+/g, ' ').slice(0, 40); };
   $$('.edpage').forEach(row => {
     const i = +row.dataset.p; const p = book.pages[i];
     row.querySelector('[data-f=text]').oninput = e => { p.text = e.target.value.replace(/\s+/g, ' ').slice(0, 160); refresh(i); };
@@ -455,7 +462,7 @@ function editor(book) {
     const stage = STAGE_KEYS[si + dir]; const btns = $$('#easier, #harder, #saveBook');
     btns.forEach(b => b.disabled = true);
     try {
-      const nb = await makeBook({ idea: book.idea, stage, pages: book.pages.length, name: M.name || '' }, m => { $('#eStatus').textContent = m; });
+      const nb = await makeBook({ idea: book.idea, stage, pages: book.pages.length, name: M.name || '', author: book.author || '' }, m => { $('#eStatus').textContent = m; });
       editor(nb);
     } catch (e) { $('#eStatus').textContent = e.message; btns.forEach(b => b.disabled = false); }
   };

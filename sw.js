@@ -1,7 +1,7 @@
 /* Blend & Read service worker: lets the app open and play with no internet.
    App files: try the network first so updates arrive straight away, fall back to the saved copy offline.
    Fonts: use the saved copy first (they never change). Everything else (Claude, the speech model) is left alone. */
-const VERSION = 'blend-read-v1';
+const VERSION = 'blend-read-v2';
 const APP_FILES = [
   './', 'index.html', 'manifest.webmanifest',
   'css/style.css',
